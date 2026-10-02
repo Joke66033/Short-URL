@@ -1,0 +1,15 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /short-url/
+
+  # ถ้า path ตรงกับ short code (ไม่ใช่ไฟล์/โฟลเดอร์จริง) → ส่งไปให้ PHP redirect
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^([a-zA-Z0-9_-]{3,32})$ /short-url/backend/index.php?code=$1 [L,QSA]
+
+  # SPA fallback — ทุก route อื่นๆ ให้โหลด React app
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /short-url/index.html [L]
+</IfModule>
